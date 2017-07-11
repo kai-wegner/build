@@ -5,6 +5,11 @@ ubuntu-*-cloudimg-console.log
 ### to ignore thins in a working copy
 .ignore_changes
 
+### compile configurations added by users
+config-*.conf
+### but not default (supplied) example.conf
+!config-example.conf
+
 ### output directories
 .tmp/
 output/
