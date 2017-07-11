@@ -116,7 +116,7 @@ create_board_package()
 	mkdir -p $destination/etc/X11/xorg.conf.d/
 	mkdir -p $destination/lib/systemd/system/
 
-	install -m 755 $SRC/lib/scripts/armhwinfo $destination/etc/init.d/
+	install -m 755 $SRC/scripts/armhwinfo $destination/etc/init.d/
 
 	# configure MIN / MAX speed for cpufrequtils
 	cat <<-EOF > $destination/etc/default/cpufrequtils
@@ -140,10 +140,10 @@ create_board_package()
 	EOF
 
 	# add USB OTG port mode switcher (obsolete - will be handled with DT overlays)
-	# install -m 755 $SRC/lib/scripts/sunxi-musb $destination/usr/bin
+	# install -m 755 $SRC/scripts/sunxi-musb $destination/usr/bin
 
 	# armbianmonitor (currently only to toggle boot verbosity and log upload)
-	install -m 755 $SRC/lib/scripts/armbianmonitor/armbianmonitor $destination/usr/bin
+	install -m 755 $SRC/scripts/armbianmonitor/armbianmonitor $destination/usr/bin
 
 	# updating uInitrd image in update-initramfs trigger
 	cat <<-EOF > $destination/etc/initramfs/post-update.d/99-uboot
@@ -189,7 +189,7 @@ create_board_package()
 	chmod +x $destination/etc/kernel/preinst.d/initramfs-cleanup
 
 	# network interfaces configuration
-	cp $SRC/lib/config/network/interfaces.* $destination/etc/network/
+	cp $SRC/config/network/interfaces.* $destination/etc/network/
 	[[ $RELEASE = xenial ]] && sed -i 's/#no-auto-down/no-auto-down/g' $destination/etc/network/interfaces.default
 
 	# apt configuration
@@ -213,7 +213,7 @@ create_board_package()
 	EOF
 
 	# configure the system for unattended upgrades
-	cp $SRC/lib/scripts/02periodic $destination/etc/apt/apt.conf.d/02periodic
+	cp $SRC/scripts/02periodic $destination/etc/apt/apt.conf.d/02periodic
 
 	# pin priority for armbian repo
 	# reference: man apt_preferences
@@ -225,7 +225,7 @@ create_board_package()
 	EOF
 
 	# script to install to SATA
-	cp -R $SRC/lib/scripts/nand-sata-install/usr $destination/
+	cp -R $SRC/scripts/nand-sata-install/usr $destination/
 	chmod +x $destination/usr/lib/nand-sata-install/nand-sata-install.sh
 	ln -s ../lib/nand-sata-install/nand-sata-install.sh $destination/usr/sbin/nand-sata-install
 
@@ -242,11 +242,11 @@ create_board_package()
 	install -m 755 $SRC/sources/Debian-micro-home-server/softy $destination/usr/bin/softy
 
 	# install custom motd with reboot and upgrade checking
-	install -m 755 $SRC/lib/scripts/update-motd.d/* $destination/etc/update-motd.d/
-	cp $SRC/lib/scripts/check_first_login_reboot.sh $destination/etc/profile.d
-	cp $SRC/lib/scripts/check_first_login.sh $destination/etc/profile.d
+	install -m 755 $SRC/scripts/update-motd.d/* $destination/etc/update-motd.d/
+	cp $SRC/scripts/check_first_login_reboot.sh $destination/etc/profile.d
+	cp $SRC/scripts/check_first_login.sh $destination/etc/profile.d
 
-	install -m 755 $SRC/lib/scripts/apt-updates $destination/usr/lib/armbian/apt-updates
+	install -m 755 $SRC/scripts/apt-updates $destination/usr/lib/armbian/apt-updates
 
 	cat <<-EOF > $destination/usr/lib/armbian/armbian-motd.default
 	# add space-separated list of MOTD script names (without number) to exclude them from MOTD
@@ -261,19 +261,19 @@ create_board_package()
 	EOF
 
 	# setting window title for remote sessions
-	install -m 755 $SRC/lib/scripts/ssh-title.sh $destination/etc/profile.d/ssh-title.sh
+	install -m 755 $SRC/scripts/ssh-title.sh $destination/etc/profile.d/ssh-title.sh
 
 	# install copy of boot script & environment file
 	local bootscript_src=${BOOTSCRIPT%%:*}
 	local bootscript_dst=${BOOTSCRIPT##*:}
-	cp $SRC/lib/config/bootscripts/$bootscript_src $destination/usr/share/armbian/$bootscript_dst
-	[[ -n $BOOTENV_FILE && -f $SRC/lib/config/bootenv/$BOOTENV_FILE ]] && \
-		cp $SRC/lib/config/bootenv/$BOOTENV_FILE $destination/usr/share/armbian/armbianEnv.txt
+	cp $SRC/config/bootscripts/$bootscript_src $destination/usr/share/armbian/$bootscript_dst
+	[[ -n $BOOTENV_FILE && -f $SRC/config/bootenv/$BOOTENV_FILE ]] && \
+		cp $SRC/config/bootenv/$BOOTENV_FILE $destination/usr/share/armbian/armbianEnv.txt
 
 	# h3disp for sun8i/3.4.x
 	if [[ $LINUXFAMILY == sun8i && $BRANCH == default ]]; then
-		install -m 755 $SRC/lib/scripts/h3disp $destination/usr/bin
-		install -m 755 $SRC/lib/scripts/h3consumption $destination/usr/bin
+		install -m 755 $SRC/scripts/h3disp $destination/usr/bin
+		install -m 755 $SRC/scripts/h3consumption $destination/usr/bin
 	fi
 
 	# add configuration for setting uboot environment from userspace with: fw_setenv fw_printenv
@@ -284,20 +284,20 @@ create_board_package()
 	fi
 
 	# log2ram - systemd compatible ramlog alternative
-	cp $SRC/lib/scripts/log2ram/LICENSE.log2ram $destination/usr/share/log2ram/LICENSE
-	cp $SRC/lib/scripts/log2ram/log2ram.service $destination/lib/systemd/system/log2ram.service
-	install -m 755 $SRC/lib/scripts/log2ram/log2ram $destination/usr/sbin/log2ram
-	install -m 755 $SRC/lib/scripts/log2ram/log2ram.hourly $destination/etc/cron.daily/log2ram
-	cp $SRC/lib/scripts/log2ram/log2ram.default $destination/etc/default/log2ram.dpkg-dist
+	cp $SRC/scripts/log2ram/LICENSE.log2ram $destination/usr/share/log2ram/LICENSE
+	cp $SRC/scripts/log2ram/log2ram.service $destination/lib/systemd/system/log2ram.service
+	install -m 755 $SRC/scripts/log2ram/log2ram $destination/usr/sbin/log2ram
+	install -m 755 $SRC/scripts/log2ram/log2ram.hourly $destination/etc/cron.daily/log2ram
+	cp $SRC/scripts/log2ram/log2ram.default $destination/etc/default/log2ram.dpkg-dist
 
 	if [[ $LINUXFAMILY == sun*i* ]]; then
-		install -m 755 $SRC/lib/scripts/armbian-add-overlay $destination/usr/sbin
+		install -m 755 $SRC/scripts/armbian-add-overlay $destination/usr/sbin
 		if [[ $BRANCH == default ]]; then
-			arm-linux-gnueabihf-gcc $SRC/lib/scripts/sunxi-temp/sunxi_tp_temp.c -o $destination/usr/bin/sunxi_tp_temp
+			arm-linux-gnueabihf-gcc $SRC/scripts/sunxi-temp/sunxi_tp_temp.c -o $destination/usr/bin/sunxi_tp_temp
 			# convert and add fex files
 			mkdir -p $destination/boot/bin
-			for i in $(ls -w1 $SRC/lib/config/fex/*.fex | xargs -n1 basename); do
-				fex2bin $SRC/lib/config/fex/${i%*.fex}.fex $destination/boot/bin/${i%*.fex}.bin
+			for i in $(ls -w1 $SRC/config/fex/*.fex | xargs -n1 basename); do
+				fex2bin $SRC/config/fex/${i%*.fex}.fex $destination/boot/bin/${i%*.fex}.bin
 			done
 		fi
 	fi
@@ -305,7 +305,7 @@ create_board_package()
 	if [[ ( $LINUXFAMILY == sun*i || $LINUXFAMILY == pine64 ) && $BRANCH == default ]]; then
 		# add mpv config for vdpau_sunxi
 		mkdir -p $destination/etc/mpv/
-		cp $SRC/lib/config/mpv_sunxi.conf $destination/etc/mpv/mpv.conf
+		cp $SRC/config/mpv_sunxi.conf $destination/etc/mpv/mpv.conf
 		echo "export VDPAU_OSD=1" > $destination/etc/profile.d/90-vdpau.sh
 		chmod 755 $destination/etc/profile.d/90-vdpau.sh
 	fi
@@ -320,7 +320,7 @@ create_board_package()
 
 	#TODO: move to sources.conf
 	if [[ $BOARD == pinebook-a64 ]]; then
-		cp $SRC/lib/scripts/pinebook-enable-sound.service $destination/lib/systemd/system/
+		cp $SRC/scripts/pinebook-enable-sound.service $destination/lib/systemd/system/
 	fi
 
 	# add some summary to the image

@@ -2,5 +2,13 @@
 .vagrant/
 ubuntu-*-cloudimg-console.log
 
+### to ignore thins in a working copy
+.ignore_changes
+
+### output directories
+output/
+cache/
+userpatches/
+
 ### General annoyances ###
 .DS_Store

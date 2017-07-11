@@ -14,29 +14,29 @@ install_desktop ()
 	display_alert "Installing desktop" "XFCE" "info"
 
 	mkdir -p $CACHEDIR/$SDCARD/tmp/bin
-	mount --bind $SRC/lib/bin/ $CACHEDIR/$SDCARD/tmp/bin
+	mount --bind $SRC/bin/ $CACHEDIR/$SDCARD/tmp/bin
 
 	# add loading desktop splash service
-	cp $SRC/lib/scripts/desktop-splash/desktop-splash.service $CACHEDIR/$SDCARD/etc/systemd/system/desktop-splash.service
+	cp $SRC/scripts/desktop-splash/desktop-splash.service $CACHEDIR/$SDCARD/etc/systemd/system/desktop-splash.service
 
 	if [[ $RELEASE == xenial ]]; then
 		# install optimized firefox configuration
-		# cp $SRC/lib/config/firefox.conf $CACHEDIR/$SDCARD/etc/firefox/syspref.js
+		# cp $SRC/config/firefox.conf $CACHEDIR/$SDCARD/etc/firefox/syspref.js
 		# install optimized chromium configuration
-		cp $SRC/lib/config/chromium.conf $CACHEDIR/$SDCARD/etc/chromium-browser/default
+		cp $SRC/config/chromium.conf $CACHEDIR/$SDCARD/etc/chromium-browser/default
 	fi
 	# install dedicated startup icons
-	cp $SRC/lib/bin/icons/${RELEASE}.png $CACHEDIR/$SDCARD/usr/share/pixmaps
+	cp $SRC/bin/icons/${RELEASE}.png $CACHEDIR/$SDCARD/usr/share/pixmaps
 
 	# install default desktop settings
-	cp -R $SRC/lib/config/desktop/. $CACHEDIR/$SDCARD/etc/skel
-	cp -R $SRC/lib/config/desktop/. $CACHEDIR/$SDCARD/root
+	cp -R $SRC/config/desktop/. $CACHEDIR/$SDCARD/etc/skel
+	cp -R $SRC/config/desktop/. $CACHEDIR/$SDCARD/root
 
 	# install wallpapers
 	d=$CACHEDIR/$SDCARD/usr/share/backgrounds/xfce/
-	test -d "$d" || mkdir -p "$d" && cp $SRC/lib/bin/wallpapers/armbian*.jpg "$d"
+	test -d "$d" || mkdir -p "$d" && cp $SRC/bin/wallpapers/armbian*.jpg "$d"
 	mkdir -p $CACHEDIR/$SDCARD/etc/polkit-1/localauthority/50-local.d
-	cp $SRC/lib/config/polkit-jessie/*.pkla $CACHEDIR/$SDCARD/etc/polkit-1/localauthority/50-local.d/
+	cp $SRC/config/polkit-jessie/*.pkla $CACHEDIR/$SDCARD/etc/polkit-1/localauthority/50-local.d/
 
 	# Install custom icons and theme
 	chroot $CACHEDIR/$SDCARD /bin/bash -c "dpkg -i /tmp/bin/vibrancy-colors_2.4-trusty-Noobslab.com_all.deb >/dev/null 2>&1"
