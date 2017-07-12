@@ -443,15 +443,15 @@ customize_image()
 {
 	# for users that need to prepare files at host
 	[[ -f $SRC/userpatches/customize-image-host.sh ]] && source $SRC/userpatches/customize-image-host.sh
-	cp $SRC/userpatches/customize-image.sh $CACHEDIR/$SDCARD/tmp/customize-image.sh
-	chmod +x $CACHEDIR/$SDCARD/tmp/customize-image.sh
-	mkdir -p $CACHEDIR/$SDCARD/tmp/overlay
+	cp $SRC/userpatches/customize-image.sh $SDCARD/tmp/customize-image.sh
+	chmod +x $SDCARD/tmp/customize-image.sh
+	mkdir -p $SDCARD/tmp/overlay
 	# util-linux >= 2.27 required
-	mount -o bind,ro $SRC/userpatches/overlay $CACHEDIR/$SDCARD/tmp/overlay
+	mount -o bind,ro $SRC/userpatches/overlay $SDCARD/tmp/overlay
 	display_alert "Calling image customization script" "customize-image.sh" "info"
-	chroot $CACHEDIR/$SDCARD /bin/bash -c "/tmp/customize-image.sh $RELEASE $LINUXFAMILY $BOARD $BUILD_DESKTOP"
-	umount $CACHEDIR/$SDCARD/tmp/overlay
-	mountpoint -q $CACHEDIR/$SDCARD/tmp/overlay || rm -r $CACHEDIR/$SDCARD/tmp/overlay
+	chroot $SDCARD /bin/bash -c "/tmp/customize-image.sh $RELEASE $LINUXFAMILY $BOARD $BUILD_DESKTOP"
+	umount $SDCARD/tmp/overlay
+	mountpoint -q $SDCARD/tmp/overlay || rm -r $SDCARD/tmp/overlay
 }
 
 userpatch_create()
