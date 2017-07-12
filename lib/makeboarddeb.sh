@@ -232,9 +232,9 @@ create_board_package()
 	# configuration script
 	# TODO: better git update logic
 	if [[ -d $SRC/sources/Debian-micro-home-server ]]; then
-		git --work-tree=$SRC/sources/Debian-micro-home-server --git-dir=$SRC/sources/Debian-micro-home-server/.git pull
+		git --work-tree=$SRC/cache/sources/Debian-micro-home-server --git-dir=$SRC/cache/sources/Debian-micro-home-server/.git pull
 	else
-		git clone https://github.com/igorpecovnik/Debian-micro-home-server $SRC/sources/Debian-micro-home-server
+		git clone https://github.com/igorpecovnik/Debian-micro-home-server $SRC/cache/sources/Debian-micro-home-server
 	fi
 
 	install -m 755 $SRC/sources/Debian-micro-home-server/scripts/tv_grab_file $destination/usr/bin/tv_grab_file
