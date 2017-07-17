@@ -10,6 +10,7 @@ config-*.conf
 ### but not default (supplied) example.conf
 !config-example.conf
 !config-docker.conf
+!config-vagrant.conf
 
 ### output directories
 .tmp/
